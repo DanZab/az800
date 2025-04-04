@@ -1,5 +1,6 @@
-# Solutions
+[Back to lesson page](README.md)
 
+# Solutions
 ## Lab Solutions
 
 <details><summary>Scenario Title 1</summary>
