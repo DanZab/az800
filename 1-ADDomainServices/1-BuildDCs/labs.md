@@ -5,8 +5,8 @@
 > [!IMPORTANT]
 > You should set aside enough time to do all of these labs in order. Because this lesson involves installing the Domain Controllers, you cannot start with the demo AD lab environment like the other lessons.
 
-[1. Install two Domain Controllers](#1---install-two-domain-controllers)
-[2 - Transfer FSMO Roles](#2---transfer-fsmo-roles)
+1. [Install two Domain Controllers](#1---install-two-domain-controllers)
+2. [Transfer FSMO Roles](#2---transfer-fsmo-roles)
 
 ---
 
