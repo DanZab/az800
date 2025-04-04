@@ -10,7 +10,7 @@ Solution Steps</details>
 
 <details><summary>1. What are flexible single master operation (FSMO) roles?</summary>
 
-FSMO roles identify which domain controller is responsible for certain domain functions that have to be managed or performed by a single domain controller. It is best practice to assign all FSMO roles to the same "primary" DC.
+> FSMO roles identify which domain controller is responsible for certain domain functions that have to be managed or performed by a single domain controller. It is best practice to assign all FSMO roles to the same "primary" DC.
 </details>
 
 <details><summary>2. What is a domain name?</summary>
