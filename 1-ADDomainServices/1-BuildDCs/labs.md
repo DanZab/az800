@@ -8,6 +8,10 @@
 1. [Install two Domain Controllers](#1---install-two-domain-controllers)
 2. [Transfer FSMO Roles](#2---transfer-fsmo-roles)
 
+## Lab Deployment
+You can use the [terraform](terraform/) directory to deploy the resources or if you wish, you can press the button below to deploy the resources through an ARM template in your environment:
+
+[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FDanZab%2Faz800%2Frefs%2Fheads%2Fmain%2Ftemplates%2F1.1.AD.json)
 ---
 
 ## 1 - Install two Domain Controllers
