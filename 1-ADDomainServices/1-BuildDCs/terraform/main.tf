@@ -18,9 +18,11 @@ terraform {
 provider "azurerm" {
   skip_provider_registration = true
 
-  subscription_id = "88c3f7e6-1e37-4579-9845-e3d92c7f93d4"
+  subscription_id = var.azure_subscription_id
   features {}
 }
+
+variable "azure_subscription_id" {}
 
 variable "location" {
   default = "eastus"

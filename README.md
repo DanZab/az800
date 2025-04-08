@@ -27,3 +27,6 @@ Both documents will have links to the associated solutions or answers for you to
 - [Implement and manage an on-premises and hybrid networking infrastructure (15–20%)](4-Networking/README.md)
 - [Manage storage and file services (15–20%)](5-Storage/README.md)
 
+## Additional Guides
+- [Lab Deployment Guide](deployment_guide.md)
+- [RDP Connection Guide](connection_guide.md)
