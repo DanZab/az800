@@ -13,3 +13,5 @@
 4. What function does DNS serve in an AD domain?
 
 5. What is a Domain Admin account and what makes them unique?
+
+[See Answers](solutions.md)

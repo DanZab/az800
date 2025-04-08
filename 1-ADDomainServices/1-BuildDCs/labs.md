@@ -12,7 +12,14 @@
 You can use the [terraform](terraform/) directory to deploy the resources or if you wish, you can press the button below to deploy the resources through an ARM template in your environment:
 
 [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FDanZab%2Faz800%2Frefs%2Fheads%2Fmain%2Ftemplates%2F1.1.AD.json)
+
+> [!CRITICAL]
+> Do not forget to run `terraform destroy` or to delete the resource group with your lab resources when you are finished!
+>
+> VMs are cheap to run for a couple hours but quickly become expensive if they are left running.
+
 ---
+
 
 ## 1 - Install two Domain Controllers
 Scenario: You are the sys admin for a new startup, you need to stand up a new domain with two domain controllers for redundancy.
