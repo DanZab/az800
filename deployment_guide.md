@@ -44,6 +44,12 @@ Click the "Deploy to Azure" button and you will be redirected to your Azure port
 
 **When prompted, create a new resource group for your lab deployments.** If you deploy everything to a new resource group, then you can just delete that resource group when you are done with the lab to ensure you are no longer paying for them.
 
+![New RG](img/newrg.png)
+
 You will also need your public IP for one of the inputs, you can get it by visiting [showmyip.com](https://www.showmyip.com/). Just copy/paste the IP address into the field. This is used to create a security rule to allow you to RDP into the VM after it's created.
+
+![My IP](img/myip.png)
+
+![IP Input](img/ipvar.png)
 
 Enter any other required inputs and deploy the resources.

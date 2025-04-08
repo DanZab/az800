@@ -7,6 +7,10 @@ To connect to a lab environment after it's been deployed:
 
 2. Enter the Public IP of your lab environment. This IP will be listed after running `terraform apply`, otherwise you can open the [azure portal](https://portal.azure.com) and search for `pip-connect`, this will display the Public IP that was created and you can copy the IP address from the resource.
 
+![Public IP](img/pip-connect.png)
+
+![RDP 2](img/rdp2.png)
+
 3. When prompted for credentials, select "Other User" and type in the credentials specified in the lab instructions
 
 ## Credentials
