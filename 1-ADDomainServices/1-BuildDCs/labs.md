@@ -16,10 +16,19 @@ Use this button to deploy with the GUI:
 
 ### Lab Information
 
+Credentials:
+
 > - The default username to connect is `lab_admin`
 > - You will be prompted for the password to set
-> - These credentials will not work after you promote the domain controllers, you will need to use domain admin credentials to connect after promotion.
 
+Server Information:
+
+> **Server 1**
+> - This is the server you RDP into
+> - Name: DC1
+
+> **Server 2**
+> - Name: DC2
 
 # Lab Scenarios
 
@@ -41,6 +50,9 @@ This lab is complete when you have two domain controllers who are members of the
 ### Lesson Objectives Covered:
 - Deploy and manage domain controllers on-premises
 - Deploy and manage domain controllers in Azure
+
+### Hints
+- Think about the requirements to promote a DC in Azure. You will need to troubleshoot to validate these are in place to add your second domain controller.
 
 ---
 

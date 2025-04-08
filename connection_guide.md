@@ -11,7 +11,11 @@ To connect to a lab environment after it's been deployed:
 
 ![RDP 2](img/rdp2.png)
 
-3. When prompted for credentials, select "Other User" and type in the credentials specified in the lab instructions
+3. When prompted for credentials, select "More choices > Use a different account" and type in the credentials specified in the lab instructions
+
+![More choices](img/morechoices.png)
+
+![creds](img/creds.png)
 
 ## Credentials
 - If the lab deployment creates servers that are not joined to the domain, the default username will be `lab_admin` (unless you specify otherwise).
