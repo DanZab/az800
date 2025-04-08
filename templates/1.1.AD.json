@@ -129,10 +129,8 @@
                         "caching": "ReadWrite",
                         "writeAcceleratorEnabled": false,
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS",
-                            "id": "[resourceId('Microsoft.Compute/disks', concat('DC1', '_disk1_88a1de36b9d04c3ea5f90fa9e2516e92'))]"
+                            "storageAccountType": "Standard_LRS"
                         },
-                        "deleteOption": "Detach",
                         "diskSizeGB": 127
                     },
                     "dataDisks": [],
