@@ -141,20 +141,10 @@
                     "adminUsername": "[parameters('username')]",
                     "adminPassword": "[parameters('password')]",
                     "windowsConfiguration": {
-                        "provisionVMAgent": true,
-                        "enableAutomaticUpdates": true,
-                        "patchSettings": {
-                            "patchMode": "AutomaticByOS",
-                            "assessmentMode": "ImageDefault",
-                            "enableHotpatching": false
-                        },
-                        "winRM": {
-                            "listeners": []
-                        }
+                        "provisionVMAgent": true
                     },
                     "secrets": [],
-                    "allowExtensionOperations": false,
-                    "requireGuestProvisionSignal": true
+                    "allowExtensionOperations": false
                 },
                 "networkProfile": {
                     "networkInterfaces": [
@@ -204,10 +194,8 @@
                         "caching": "ReadWrite",
                         "writeAcceleratorEnabled": false,
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS",
-                            "id": "[resourceId('Microsoft.Compute/disks', concat('DC2', '_disk1_cb0b6578934c4b4a84e739775bda7c5b'))]"
+                            "storageAccountType": "Standard_LRS"
                         },
-                        "deleteOption": "Detach",
                         "diskSizeGB": 127
                     },
                     "dataDisks": [],
@@ -218,20 +206,10 @@
                     "adminUsername": "[parameters('username')]",
                     "adminPassword": "[parameters('password')]",
                     "windowsConfiguration": {
-                        "provisionVMAgent": true,
-                        "enableAutomaticUpdates": true,
-                        "patchSettings": {
-                            "patchMode": "AutomaticByOS",
-                            "assessmentMode": "ImageDefault",
-                            "enableHotpatching": false
-                        },
-                        "winRM": {
-                            "listeners": []
-                        }
+                        "provisionVMAgent": true
                     },
                     "secrets": [],
-                    "allowExtensionOperations": false,
-                    "requireGuestProvisionSignal": true
+                    "allowExtensionOperations": false
                 },
                 "networkProfile": {
                     "networkInterfaces": [
