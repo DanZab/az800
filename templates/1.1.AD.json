@@ -9,8 +9,11 @@
         "password": {
             "type": "String"
         },
-        "your_publicIp_address": {
-            "type": "String"
+        "yourPublicIpAddress": {
+            "type": "String",
+            "metadata": {
+              "description": "Google 'Whats my IP' and copy the result here. Creates the rule to allow you to RDP to your VM."
+            }
         }
     },
     "variables": {},
@@ -30,7 +33,7 @@
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "destinationPortRange": "3389",
-                            "sourceAddressPrefix": "[concat(parameters('your_publicIp_address'), '/32')]",
+                            "sourceAddressPrefix": "[concat(parameters('yourPublicIpAddress'), '/32')]",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 100,
@@ -302,7 +305,7 @@
                 "protocol": "Tcp",
                 "sourcePortRange": "*",
                 "destinationPortRange": "3389",
-                "sourceAddressPrefix": "[concat(parameters('your_publicIp_address'),'/32')]",
+                "sourceAddressPrefix": "[concat(parameters('yourPublicIpAddress'),'/32')]",
                 "destinationAddressPrefix": "*",
                 "access": "Allow",
                 "priority": 100,
