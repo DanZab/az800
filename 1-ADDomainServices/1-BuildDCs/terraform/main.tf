@@ -86,9 +86,17 @@ resource "azurerm_network_security_rule" "from_source" {
   resource_group_name         = azurerm_resource_group.this.name
   network_security_group_name = azurerm_network_security_group.rdp.name
 }
+
+resource "azurerm_network_interface_security_group_association" "rdp" {
+  network_interface_id      = module.first_server[local.servers[0].name].network_interface_id
+  network_security_group_id = azurerm_network_security_group.rdp.id
+}
+
 data "azurerm_public_ip" "this" {
   name                = azurerm_public_ip.public.name
   resource_group_name = azurerm_resource_group.this.name
+
+  depends_on = [module.first_server]
 }
 output "connect_ip" {
   value = data.azurerm_public_ip.this.ip_address

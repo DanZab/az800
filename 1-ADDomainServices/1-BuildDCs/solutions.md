@@ -84,3 +84,9 @@ After connecting to your lab server (DC1):
 
 > Domain admins are the most highly privileged accounts in an AD environment. A domain admin account can be used to gain access to any system connected to an AD domain. It is best practice to limit the use of these accounts to only domain administration tasks on the DCs themselves.
 </details>
+
+<details><summary>6. What is the difference between a NetBIOS username and a user principal name and how would you type each into a login prompt?</summary>
+<br>
+
+> A NetBIOS username is the old format that looks like `DOMAIN\user`, a user principal name is a modern format that looks like `user@domain.name`.
+</details>
