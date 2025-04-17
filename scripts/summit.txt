@@ -30,7 +30,7 @@
         @{name = "kande";first = "Kevin";Last = "Anderson";displayname = "Kevin Anderson"},
         @{name = "jtayl";first = "Jessica";Last = "Taylor";displayname = "Jessica Taylor"},
         @{name = "jthom";first = "Jason";Last = "Thomas";displayname = "Jason Thomas"},
-        @{name = "mjack";first = "Michelle";Last = "Jackson";displayname = "Michelle Jackson"},
+        @{name = "mjack";first = "Michelle";Last = "Jackson";displayname = "Michelle Jackson"}
     )
     $AdminUsers = @(
         @{name = "nmart-ADM";first = "Nicole";Last = "Martinez";displayname = "(Admin) Nicole Martinez"},
@@ -39,7 +39,7 @@
         @{name = "jthom-ADM";first = "Jason";Last = "Thomas";displayname = "(Admin) Jason Thomas"},
         @{name = "mjack-ADM";first = "Michelle";Last = "Jackson";displayname = "(Admin) Michelle Jackson"},
         @{name = "jthom-DA";first = "Jason";Last = "Thomas";displayname = "(Domain Admin) Jason Thomas"},
-        @{name = "mjack-DA";first = "Michelle";Last = "Jackson";displayname = "(Domain Admin) Michelle Jackson"},
+        @{name = "mjack-DA";first = "Michelle";Last = "Jackson";displayname = "(Domain Admin) Michelle Jackson"}
     )
     $Groups = @(
         @{name = "SEC-ServerAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Admin permissions on Servers";members = ($AdminUsers | Where-Object {$_.name -like "*-ADM"}).name},
