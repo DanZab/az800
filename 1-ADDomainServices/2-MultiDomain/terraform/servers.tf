@@ -190,7 +190,7 @@ PROT_SETTINGS
 }
 
 resource "azurerm_virtual_machine_extension" "domain_join" {
-  for_each = { for server in local.servers : server.name => server if server.domain != null }
+  for_each = { for server in local.servers : server.name => server if try(server.domain != null, false) }
 
   name                       = "join-domain"
   virtual_machine_id         = module.remaining_servers[each.key].vm_id
