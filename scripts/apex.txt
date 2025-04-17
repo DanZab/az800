@@ -1,6 +1,6 @@
  Param(
     [System.Management.Automation.PSCredential]$DomainCreds,
-    [Sring]$DomainRoot
+    [String]$DomainRoot
  )
     $OUs = @(
         @{name="Workstations";path="$DomainRoot"},
