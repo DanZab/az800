@@ -16,25 +16,30 @@
         @{name="RBAC";path="OU=Groups,$DomainRoot"}
     )
     $Users = @(
-        @{name = "LSullivan";first = "Liam";Last = "Sullivan";displayname = "Liam Sullivan"},
-        @{name = "EWilson";first = "Emma";Last = "Wilson";displayname = "Emma Wilson"},
-        @{name = "JCarter";first = "John";Last = "Carter";displayname = "John Carter"},
-        @{name = "MDavis";first = "Mary";Last = "Davis";displayname = "Mary Davis"},
-        @{name = "DMiller";first = "David";Last = "Miller";displayname = "David Miller"},
-        @{name = "EThorne";first = "Evelyn";Last = "Thorne";displayname = "Evelyn Thorne"},
-        @{name = "CBeaumont";first = "Charlotte";Last = "Beaumont";displayname = "Charlie Beaumont"},
-        @{name = "NGreene";first = "Noah";Last = "Greene";displayname = "Noah Greene"},
-        @{name = "OWalker";first = "Olivia";Last = "Walker";displayname = "Olivia Walker"},
-        @{name = "LEvans";first = "Lucas";Last = "Evans";displayname = "Lucas Evans"}
+        @{name = "jsmit";first = "John";Last = "Smith";displayname = "John Smith"},
+        @{name = "mjohn";first = "Mary";Last = "Johnson";displayname = "Mary Johnson"},
+        @{name = "rwill";first = "Robert";Last = "Williams";displayname = "Robert Williams"},
+        @{name = "jbrow";first = "Jennifer";Last = "Brown";displayname = "Jennifer Brown"},
+        @{name = "mjone";first = "Michael";Last = "Jones";displayname = "Michael Jones"},
+        @{name = "ldavi";first = "Linda";Last = "Davis";displayname = "Linda Davis"},
+        @{name = "dmill";first = "David";Last = "Miller";displayname = "David Miller"},
+        @{name = "cwils";first = "Christopher";Last = "Wilson";displayname = "Christopher Wilson"},
+        @{name = "agarc";first = "Angela";Last = "Garcia";displayname = "Angela Garcia"},
+        @{name = "brodr";first = "Brian";Last = "Rodriguez";displayname = "Brian Rodriguez"},
+        @{name = "nmart";first = "Nicole";Last = "Martinez";displayname = "Nicole Martinez"},
+        @{name = "kande";first = "Kevin";Last = "Anderson";displayname = "Kevin Anderson"},
+        @{name = "jtayl";first = "Jessica";Last = "Taylor";displayname = "Jessica Taylor"},
+        @{name = "jthom";first = "Jason";Last = "Thomas";displayname = "Jason Thomas"},
+        @{name = "mjack";first = "Michelle";Last = "Jackson";displayname = "Michelle Jackson"},
     )
     $AdminUsers = @(
-        @{name = "LEvans-ADM";first = "Lucas";Last = "Evans";displayname = "(Admin) Luke Evans"},
-        @{name = "LEvans-DA";first = "Lucas";Last = "Evans";displayname = "(DA) Luke Evans"},
-        @{name = "CBeaumont-ADM";first = "Charlotte";Last = "Beaumont";displayname = "(Admin) Charlie Beaumont"},
-        @{name = "NGreene-ADM";first = "Noah";Last = "Greene";displayname = "(Admin) Noah Greene"},
-        @{name = "NGreene-DA";first = "Noah";Last = "Greene";displayname = "(DA) Noah Greene"}
-        @{name = "NGreene-EA";first = "Noah";Last = "Greene";displayname = "(EA) Noah Greene"}
-        @{name = "LEvans-EA";first = "Lucas";Last = "Evans";displayname = "(EA) Luke Evans"},
+        @{name = "nmart-ADM";first = "Nicole";Last = "Martinez";displayname = "(Admin) Nicole Martinez"},
+        @{name = "kande-ADM";first = "Kevin";Last = "Anderson";displayname = "(Admin) Kevin Anderson"},
+        @{name = "jtayl-ADM";first = "Jessica";Last = "Taylor";displayname = "(Admin) Jessica Taylor"},
+        @{name = "jthom-ADM";first = "Jason";Last = "Thomas";displayname = "(Admin) Jason Thomas"},
+        @{name = "mjack-ADM";first = "Michelle";Last = "Jackson";displayname = "(Admin) Michelle Jackson"},
+        @{name = "jthom-DA";first = "Jason";Last = "Thomas";displayname = "(Domain Admin) Jason Thomas"},
+        @{name = "mjack-DA";first = "Michelle";Last = "Jackson";displayname = "(Domain Admin) Michelle Jackson"},
     )
     $Groups = @(
         @{name = "SEC-ServerAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Admin permissions on Servers";members = ($AdminUsers | Where-Object {$_.name -like "*-ADM"}).name},
@@ -44,7 +49,6 @@
         @{name = "APP-BackupUtil-Admin";OU = "OU=Application,OU=Groups,$DomainRoot";description = "Admin rights in BackupUtil";members = @()}
     )
     [array]$DomainAdmins = ($AdminUsers | Where-Object {$_.name -like "*-DA"}).name
-    [array]$EnterpriseAdmins = ($AdminUsers | Where-Object {$_.name -like "*-EA"}).name
 
     ForEach ($OU in $OUs)
     {
@@ -69,4 +73,3 @@
     }
 
     Add-ADGroupMember "Domain Admins" -Members $DomainAdmins
-    Add-ADGroupMember "Enterprise Admins" -Members $EnterpriseAdmins

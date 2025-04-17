@@ -1,4 +1,4 @@
-configuration setup-domain 
+configuration addomain 
 { 
     param 
     ( 
@@ -113,7 +113,7 @@ configuration setup-domain
         {
             SetScript  = {
                 Invoke-WebRequest "$using:ConfigScript" -UseBasicParsing -Outfile "C:\Temp\ad.ps1"
-                C:\Temp\ad.ps1 -DomainCreds $DomainCreds -DomainRoot $DomainRoot
+                C:\Temp\ad.ps1 -DomainCreds $DomainCreds -DomainRoot $DomainRoot -DefaultUsername $Admincreds.UserName
             }
             GetScript  = { @{} }
             TestScript = { $false }

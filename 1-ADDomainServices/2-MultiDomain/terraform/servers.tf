@@ -3,28 +3,37 @@
 locals {
   servers = [
     {
-      name       = "DC1"
+      name       = "APEXDC1"
+      ip         = "10.0.0.4"
       size       = "Standard_B2s"
       image_plan = "2022-datacenter-g2"
-      data_disks = [{
-        name                 = "DC1-DISK2"
-        storage_account_type = "Standard_LRS"
-        create_option        = "Empty"
-        attach_setting = {
-          lun     = 1
-          caching = "ReadWrite"
-        }
-        disk_size_gb = 128
-      }]
     },
     {
-      name       = "DC2"
+      name       = "APEXSRV"
+      ip         = "10.0.0.5"
+      domain     = "apex.local"
+      size       = "Standard_B2s"
+      image_plan = "2022-datacenter-g2"
+    },
+    {
+      name       = "EUDC1"
+      ip         = "10.0.0.6"
+      size       = "Standard_B2s"
+      image_plan = "2022-datacenter-g2"
+    },
+    {
+      name       = "EUSRV"
+      ip         = "10.0.0.7"
+      size       = "Standard_B2s"
+      image_plan = "2022-datacenter-g2"
+    },
+    {
+      name       = "SUMMITDC"
+      ip         = "10.0.0.8"
       size       = "Standard_B2s"
       image_plan = "2022-datacenter-g2"
     }
   ]
-
-  domain_dn = join(",", [for el in split(".", var.domain_name) : "DC=${el}"])
 }
 
 module "first_server" {
@@ -64,7 +73,8 @@ module "first_server" {
     name = "${each.key}-nic"
     ip_configurations = [
       {
-        private_ip_address_allocation = "Dynamic"
+        private_ip_address_allocation = "Static"
+        private_ip_address            = each.value.ip
         primary                       = true
         public_ip_address_id          = azurerm_public_ip.public.id
       },
@@ -107,7 +117,10 @@ module "remaining_servers" {
   new_network_interface = {
     name = "${each.key}-nic"
     ip_configurations = [
-      { private_ip_address_allocation = "Dynamic" }
+      {
+        private_ip_address_allocation = "Static"
+        private_ip_address            = each.value.ip
+      }
     ]
   }
 }
@@ -122,15 +135,15 @@ resource "azurerm_virtual_machine_extension" "setup_domain" {
 
   settings = <<SETTINGS
 {
-  "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/setup-domain.zip",
-  "ConfigurationFunction": "setup-domain.ps1\\setup-domain",
+  "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/addomain.zip",
+  "ConfigurationFunction": "addomain.ps1\\addomain",
   "Properties": {
-    "DomainName": "${var.domain_name}",
+    "DomainName": "apex.local",
     "AdminCreds": {
       "UserName": "${var.username}",
       "Password": "PrivateSettingsRef:AdminPassword"
     },
-    "DomainDN": "${local.domain_dn}"
+    "ConfigScript": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/apex.txt"
   }
 }
 SETTINGS
@@ -142,4 +155,64 @@ SETTINGS
   }
 }
 PROT_SETTINGS
+}
+
+resource "azurerm_virtual_machine_extension" "setup_summit" {
+  name                       = "setup_ad"
+  virtual_machine_id         = module.first_server[local.servers[0].name].vm_id
+  publisher                  = "Microsoft.Powershell"
+  type                       = "DSC"
+  type_handler_version       = "2.19"
+  auto_upgrade_minor_version = true
+
+  settings = <<SETTINGS
+{
+  "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/addomain.zip",
+  "ConfigurationFunction": "addomain.ps1\\addomain",
+  "Properties": {
+    "DomainName": "summit.corp",
+    "AdminCreds": {
+      "UserName": "${var.username}",
+      "Password": "PrivateSettingsRef:AdminPassword"
+    },
+    "ConfigScript": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/summit.txt"
+  }
+}
+SETTINGS
+
+  protected_settings = <<PROT_SETTINGS
+{
+  "Items": {
+    "AdminPassword": "${var.password}"
+  }
+}
+PROT_SETTINGS
+}
+
+resource "azurerm_virtual_machine_extension" "domain_join" {
+  for_each = { for server in local.servers : server.name => server if server.domain != null }
+
+  name                       = "join-domain"
+  virtual_machine_id         = module.remaining_servers[each.key].vm_id
+  publisher                  = "Microsoft.Compute"
+  type                       = "JsonADDomainExtension"
+  type_handler_version       = "1.3"
+  auto_upgrade_minor_version = true
+
+  settings = <<SETTINGS
+        {
+            "Name": "${each.value.domain}",
+            "User": "${var.username}@${each.value.domain}",
+            "Restart": "true",
+            "Options": "3"
+        }
+SETTINGS
+
+  protected_settings = <<PROTECTED_SETTINGS
+        {
+            "Password": "${var.password}"
+        }
+PROTECTED_SETTINGS
+
+  depends_on = [azurerm_virtual_machine_extension.setup_domain]
 }
