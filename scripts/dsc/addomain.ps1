@@ -112,9 +112,8 @@ configuration setup-domain
         Script Config
         {
             SetScript  = {
-                $Path = "C:\Temp\GPO"
-                New-Item -Path $Path -ItemType Directory -Force
                 Invoke-WebRequest "$using:ConfigScript" -UseBasicParsing -Outfile "C:\Temp\ad.ps1"
+                C:\Temp\ad.ps1 -DomainCreds $DomainCreds -DomainRoot $DomainRoot
             }
             GetScript  = { @{} }
             TestScript = { $false }

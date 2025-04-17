@@ -1,12 +1,13 @@
-
-    $RootOUs = @(
-        "Workstations",
-        "Servers",
-        "People",
-        "Groups",
-        "Resources"
-    )
-    $SubOUs = @(
+ Param(
+    [System.Management.Automation.PSCredential]$DomainCreds,
+    [Sring]$DomainRoot
+ )
+    $OUs = @(
+        @{name="Workstations";path="$DomainRoot"},
+        @{name="Servers";path="$DomainRoot"},
+        @{name="People";path="$DomainRoot"},
+        @{name="Groups";path="$DomainRoot"},
+        @{name="Resources";path="$DomainRoot"}
         @{name="Admins";path="OU=People,$DomainRoot"},
         @{name="Security";path="OU=Groups,$DomainRoot"},
         @{name="Application";path="OU=Groups,$DomainRoot"},
@@ -42,95 +43,25 @@
     [array]$DomainAdmins = ($AdminUsers | Where-Object {$_.name -like "*-DA"}).name
     $DomainAdmins += $Admincreds.UserName
 
-        ForEach ($RootOU in $RootOUs)
-        {
-            xADOrganizationalUnit ($RootOU).Replace(" ","")
-            {
-                Name                            = $RootOU
-                Path                            = $DomainRoot
-                ProtectedFromAccidentalDeletion = $true
-                Ensure                          = "Present"
-                Credential                      = $DomainCreds
-                DependsOn                       = @("[xWaitForADDomain]DscForestWait")
-            }
-        }
+    ForEach ($OU in $OUs)
+    {
+        New-ADOrganizationalUnit -Name $RootOU -Path $DomainDN -ProtectedFromAccidentalDeletion $true -Credential $DomainCreds
+    }
         
-        ForEach ($SubOU in $SubOUs)
-        {
-            xADOrganizationalUnit ($SubOU.name).Replace(" ","")
-            {
-                Name                            = $SubOU.name
-                Path                            = $SubOU.path
-                ProtectedFromAccidentalDeletion = $true
-                Ensure                          = "Present"
-                Credential                      = $DomainCreds
-                DependsOn                       = @("[xWaitForADDomain]DscForestWait","[xADOrganizationalUnit]$($RootOUs[-1])")
-            }
-        }
-        
-        ForEach ($User in $Users)
-        {
-            xADUser $User.name
-            {
-                DomainName                    = $DomainName
-                Ensure                        = "Present"
-                DomainAdministratorCredential = $DomainCreds
-                DependsOn                     = "[xADOrganizationalUnit]People"
-                UserName                      = $User.name
-                Path                          = "OU=People,$DomainRoot"
-                Password                      = $Admincreds
-                DisplayName                   = $User.displayname
-                GivenName                     = $User.first
-                Surname                       = $User.last
-            }
-        }
+    ForEach ($User in $Users)
+    {
+        New-ADUser -Name $User.name -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=People,$DomainRoot" -Credential $DomainCreds
+    }
 
-        ForEach ($AdminUser in $AdminUsers)
-        {
-            xADUser $AdminUser.name
-            {
-                DomainName                    = $DomainName
-                Ensure                        = "Present"
-                DomainAdministratorCredential = $DomainCreds
-                DependsOn                     = "[xADOrganizationalUnit]Admins"
-                UserName                      = $AdminUser.name
-                Path                          = "OU=Admins,OU=People,$DomainRoot"
-                Password                      = $Admincreds
-                DisplayName                   = $AdminUser.displayname
-                GivenName                     = $AdminUser.first
-                Surname                       = $AdminUser.last
-            }
-        }
+    ForEach ($User in $AdminUsers)
+    {
+        New-ADUser -Name $User.name -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=Admins,OU=People,$DomainRoot" -Credential $DomainCreds
+    }
 
-        xADUser AdminUser
-        {
-            DomainName                    = $DomainName
-            Ensure                        = "Present"
-            DomainAdministratorCredential = $DomainCreds
-            DependsOn                     = "[xADOrganizationalUnit]Admins"
-            UserName                      = "$($Admincreds.UserName)"
-            Path                          = "OU=Admins,OU=People,$DomainRoot"
-        }
+    ForEach ($Group in $Groups)
+    {
+        New-ADGroup -Name $Group.name -Path $Group.OU -Description $Group.description
+        Add-ADGroupMember $Group.Name -Members $Group.Members
+    }
 
-        ForEach ($Group in $Groups)
-        {
-            xADGroup $Group.name
-            {
-                Ensure      = "Present"
-                Credential  = $DomainCreds
-                DependsOn   = @("[xWaitForADDomain]DscForestWait","[xADUser]$($AdminUsers[-1].name)")
-                GroupName   = $Group.name
-                Path        = $Group.OU
-                Description = $Group.description
-                Members     = $Group.members
-            }
-        }
-
-        xADGroup DomainAdmins
-        {
-            Ensure      = "Present"
-            Credential  = $DomainCreds
-            DependsOn   = @("[xWaitForADDomain]DscForestWait","[xADUser]$($AdminUsers[-1].name)")
-            GroupName   = "Domain Admins"
-            Members     = $DomainAdmins
-        }
+    Add-ADGroupMember "Domain Admins" -Members $DomainAdmins
