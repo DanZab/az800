@@ -150,7 +150,7 @@ configuration addomain
             }
             GetScript  = { @{} }
             TestScript = { $false }
-            DependsOn  = @("[xWaitForADDomain]DscForestWait","[xADOrganizationalUnit]$($RootOUs[-1])")
+            DependsOn  = @("[xWaitForADDomain]DscForestWait")
         }
     }
 }

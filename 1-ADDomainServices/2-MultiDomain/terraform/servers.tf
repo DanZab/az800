@@ -101,6 +101,7 @@ module "remaining_servers" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
+  allow_extension_operations = true
 
   source_image_reference = {
     publisher = "MicrosoftWindowsServer"
