@@ -1,5 +1,6 @@
  Param(
     [System.Management.Automation.PSCredential]$DomainCreds,
+    [string]$DomainName,
     [String]$DomainRoot,
     [String]$DefaultUsername
  )
@@ -53,12 +54,12 @@
         
     ForEach ($User in $Users)
     {
-        New-ADUser -Name $User.name -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=People,$DomainRoot" -Credential $DomainCreds
+        New-ADUser -Name $User.name -AccountPassword $DomainCreds.Password -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=People,$DomainRoot" -Credential $DomainCreds
     }
 
     ForEach ($User in $AdminUsers)
     {
-        New-ADUser -Name $User.name -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=Admins,OU=People,$DomainRoot" -Enabled $true -Credential $DomainCreds
+        New-ADUser -Name $User.name -AccountPassword $DomainCreds.Password -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=Admins,OU=People,$DomainRoot" -Enabled $true -Credential $DomainCreds
     }
     Move-ADObject -Identity "CN=$DefaultUsername,CN=Users,$DomainRoot" -TargetPath "OU=Admins,OU=People,$DomainRoot"
 

@@ -1,5 +1,6 @@
  Param(
     [System.Management.Automation.PSCredential]$DomainCreds,
+    [string]$DomainName,
     [String]$DomainRoot,
     [String]$DefaultUsername
  )
@@ -15,61 +16,95 @@
         @{name="File Share";path="OU=Groups,$DomainRoot"},
         @{name="RBAC";path="OU=Groups,$DomainRoot"}
     )
-    $Users = @(
-        @{name = "jsmit";first = "John";Last = "Smith";displayname = "John Smith"},
-        @{name = "mjohn";first = "Mary";Last = "Johnson";displayname = "Mary Johnson"},
-        @{name = "rwill";first = "Robert";Last = "Williams";displayname = "Robert Williams"},
-        @{name = "jbrow";first = "Jennifer";Last = "Brown";displayname = "Jennifer Brown"},
-        @{name = "mjone";first = "Michael";Last = "Jones";displayname = "Michael Jones"},
-        @{name = "ldavi";first = "Linda";Last = "Davis";displayname = "Linda Davis"},
-        @{name = "dmill";first = "David";Last = "Miller";displayname = "David Miller"},
-        @{name = "cwils";first = "Christopher";Last = "Wilson";displayname = "Christopher Wilson"},
-        @{name = "agarc";first = "Angela";Last = "Garcia";displayname = "Angela Garcia"},
-        @{name = "brodr";first = "Brian";Last = "Rodriguez";displayname = "Brian Rodriguez"},
-        @{name = "nmart";first = "Nicole";Last = "Martinez";displayname = "Nicole Martinez"},
-        @{name = "kande";first = "Kevin";Last = "Anderson";displayname = "Kevin Anderson"},
-        @{name = "jtayl";first = "Jessica";Last = "Taylor";displayname = "Jessica Taylor"},
-        @{name = "jthom";first = "Jason";Last = "Thomas";displayname = "Jason Thomas"},
-        @{name = "mjack";first = "Michelle";Last = "Jackson";displayname = "Michelle Jackson"}
+
+    $Users = @("John Smith",
+        "Mary Johnson",
+        "Robert Williams",
+        "Jennifer Brown",
+        "Michael Jones",
+        "Linda Davis",
+        "David Miller",
+        "Christopher Wilson",
+        "Angela Garcia",
+        "Brian Rodriguez",
+        "Nicole Martinez",
+        "Kevin Anderson",
+        "Jessica Taylor",
+        "Jason Thomas",
+        "Michelle Jackson"
+        "(Admin) Nicole Martinez",
+        "(Admin) Kevin Anderson",
+        "(Admin) Jessica Taylor",
+        "(Admin) Jason Thomas",
+        "(Admin) Michelle Jackson",
+        "(Domain Admin) Jason Thomas",
+        "(Domain Admin) Michelle Jackson"
     )
-    $AdminUsers = @(
-        @{name = "nmart-ADM";first = "Nicole";Last = "Martinez";displayname = "(Admin) Nicole Martinez"},
-        @{name = "kande-ADM";first = "Kevin";Last = "Anderson";displayname = "(Admin) Kevin Anderson"},
-        @{name = "jtayl-ADM";first = "Jessica";Last = "Taylor";displayname = "(Admin) Jessica Taylor"},
-        @{name = "jthom-ADM";first = "Jason";Last = "Thomas";displayname = "(Admin) Jason Thomas"},
-        @{name = "mjack-ADM";first = "Michelle";Last = "Jackson";displayname = "(Admin) Michelle Jackson"},
-        @{name = "jthom-DA";first = "Jason";Last = "Thomas";displayname = "(Domain Admin) Jason Thomas"},
-        @{name = "mjack-DA";first = "Michelle";Last = "Jackson";displayname = "(Domain Admin) Michelle Jackson"}
-    )
+
+
+    $DomainAdmins = @()
+    $AdminAccounts = @()
+    ForEach ($User in $Users)
+    {
+        If ($User -like "(Admin)*") {
+            $First = $User.Split(" ")[1]
+            $Last = $User.Split(" ")[2]
+            $Name = "$($First.substring(0,1))$($Last.substring(0,4))-ADM"
+            $Path = "OU=Admins,OU=People,$DomainRoot"
+            $AdminAccounts += $Name
+        }
+        ElseIf ($User -like "(Domain Admin)*") {
+            $First = $User.Split(" ")[2]
+            $Last = $User.Split(" ")[3]
+            $Name = "$($First.substring(0,1))$($Last.substring(0,4))-DA"
+            $Path = "OU=Admins,OU=People,$DomainRoot"
+            $DomainAdmins += $Name
+        }
+        Else {
+            $First = $User.Split(" ")[0]
+            $Last = $User.Split(" ")[1]
+            $Name = "$($First.substring(0,1))$($Last.substring(0,4))"
+            $Path = "OU=People,$DomainRoot"
+        }
+        $args = @{
+             Name = $User
+             UserPrincipalName = "$Name@$DomainName"
+             SamAccountName = $Name
+             AccountPassword = $DomainCreds.Password
+             DisplayName = $User
+             GivenName = $First
+             Surname = $Last
+             Path = $Path
+             Enabled = $true
+             Credential = $DomainCreds
+        }
+        New-ADUser @args
+    }
+
     $Groups = @(
-        @{name = "SEC-ServerAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Admin permissions on Servers";members = ($AdminUsers | Where-Object {$_.name -like "*-ADM"}).name},
-        @{name = "SEC-RODCDelegatedAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Delegated Admin Permissions on RODCs";members = @()},
-        @{name = "FS-DFS-IT-RW";OU = "OU=File Share,OU=Groups,$DomainRoot";description = "Read/Write on \\$DomainName\IT$";members = @()},
-        @{name = "APP-BackupUtil-User";OU = "OU=Application,OU=Groups,$DomainRoot";description = "Login to BackupUtil";members = @()},
-        @{name = "APP-BackupUtil-Admin";OU = "OU=Application,OU=Groups,$DomainRoot";description = "Admin rights in BackupUtil";members = @()}
+        @{name = "SEC-ServerAdmins";Path = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Admin permissions on Servers";members = $AdminAccounts},
+        @{name = "SEC-RODCDelegatedAdmins";Path = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Delegated Admin Permissions on RODCs";members = @()},
+        @{name = "FS-DFS-IT-RW";Path = "OU=File Share,OU=Groups,$DomainRoot";description = "Read/Write on \\$DomainName\IT$";members = @()},
+        @{name = "APP-BackupUtil-User";Path = "OU=Application,OU=Groups,$DomainRoot";description = "Login to BackupUtil";members = @()},
+        @{name = "APP-BackupUtil-Admin";Path = "OU=Application,OU=Groups,$DomainRoot";description = "Admin rights in BackupUtil";members = @()}
     )
-    [array]$DomainAdmins = ($AdminUsers | Where-Object {$_.name -like "*-DA"}).name
+
 
     ForEach ($OU in $OUs)
     {
-        New-ADOrganizationalUnit -Name $OU.name -Path $OU.path -ProtectedFromAccidentalDeletion $true -Credential $DomainCreds
-    }
-        
-    ForEach ($User in $Users)
-    {
-        New-ADUser -Name $User.name -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=People,$DomainRoot" -Credential $DomainCreds
-    }
-
-    ForEach ($User in $AdminUsers)
-    {
-        New-ADUser -Name $User.name -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=Admins,OU=People,$DomainRoot" -Enabled $true -Credential $DomainCreds
+        New-ADOrganizationalUnit @OU -ProtectedFromAccidentalDeletion $true -Credential $DomainCreds
     }
     Move-ADObject -Identity "CN=$DefaultUsername,CN=Users,$DomainRoot" -TargetPath "OU=Admins,OU=People,$DomainRoot"
 
     ForEach ($Group in $Groups)
     {
-        New-ADGroup -Name $Group.name -Path $Group.OU -Description $Group.description -GroupCategory Security -GroupScope Global
-        Add-ADGroupMember $Group.Name -Members $Group.Members
+        $args = @{
+            Name = $Group.Name
+            Path = $Group.Path
+            Description = $Group.Description
+        }
+        New-ADGroup @args -GroupCategory Security -GroupScope Global
+        If (($Group.Members).Count -gt 0) {Add-ADGroupMember $Group.Name -Members $Group.Members}
     }
 
     Add-ADGroupMember "Domain Admins" -Members $DomainAdmins

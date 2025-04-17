@@ -160,7 +160,7 @@ PROT_SETTINGS
 
 resource "azurerm_virtual_machine_extension" "setup_summit" {
   name                       = "setup_ad"
-  virtual_machine_id         = module.first_server[local.servers[0].name].vm_id
+  virtual_machine_id         = module.remaining_servers["SUMMITDC"].vm_id
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
   type_handler_version       = "2.19"
