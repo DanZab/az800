@@ -9,7 +9,7 @@ configuration setup-domain
         [String]$DomainDN,
 
         [Parameter(Mandatory=$false)]
-        [String]$GPOzip="https://raw.githubusercontent.com/DanZab/az801/main/scripts/dsc/gpo.zip",
+        [String]$GPOzip="https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/gpo.zip",
 
         [Parameter(Mandatory)]
         [System.Management.Automation.PSCredential]$Admincreds,

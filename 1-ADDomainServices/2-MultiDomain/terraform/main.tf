@@ -83,7 +83,7 @@ resource "azurerm_network_security_rule" "from_source" {
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
-  source_address_prefix       = "${trimspace(data.http.myip.body)}/32"
+  source_address_prefix       = "${trimspace(data.http.myip.response_body)}/32"
   source_port_range           = "*"
   destination_address_prefix  = "*"
   destination_port_range      = "3389"

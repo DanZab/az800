@@ -6,6 +6,16 @@ locals {
       name       = "DC1"
       size       = "Standard_B2s"
       image_plan = "2022-datacenter-g2"
+      data_disks = [{
+        name                 = "DC1-DISK2"
+        storage_account_type = "Standard_LRS"
+        create_option        = "Empty"
+        attach_setting = {
+          lun     = 1
+          caching = "ReadWrite"
+        }
+        disk_size_gb = 128
+      }]
     },
     {
       name       = "DC2"
@@ -36,6 +46,7 @@ module "first_server" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
+  allow_extension_operations = true
 
   source_image_reference = {
     publisher = "MicrosoftWindowsServer"
@@ -103,7 +114,7 @@ module "remaining_servers" {
 
 resource "azurerm_virtual_machine_extension" "setup_domain" {
   name                       = "setup_ad"
-  virtual_machine_id         = module.first_server[local.servers[0]].vm_id
+  virtual_machine_id         = module.first_server[local.servers[0].name].vm_id
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
   type_handler_version       = "2.19"
@@ -111,7 +122,7 @@ resource "azurerm_virtual_machine_extension" "setup_domain" {
 
   settings = <<SETTINGS
 {
-  "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az801/main/scripts/dsc/setup-domain.zip"
+  "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/setup-domain.zip",
   "ConfigurationFunction": "setup-domain.ps1\\setup-domain",
   "Properties": {
     "DomainName": "${var.domain_name}",
