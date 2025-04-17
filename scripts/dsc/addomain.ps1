@@ -104,8 +104,8 @@ configuration addomain
         {
             DomainName           = $DomainName
             DomainUserCredential = $DomainCreds
-            RetryCount           = "3"
-            RetryIntervalSec     = "300"
+            RetryCount           = "20"
+            RetryIntervalSec     = "30"
             DependsOn            = "[xADDomain]FirstDS"
         }
 
