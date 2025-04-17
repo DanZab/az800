@@ -109,16 +109,16 @@ configuration addomain
             DependsOn            = "[xADDomain]FirstDS"
         }
 
-        Script Config
-        {
-            SetScript  = {
-                Invoke-WebRequest "$using:ConfigScript" -UseBasicParsing -Outfile "C:\Temp\ad.ps1"
-                C:\Temp\ad.ps1 -DomainCreds $DomainCreds -DomainRoot $DomainRoot -DefaultUsername $Admincreds.UserName
-            }
-            GetScript  = { @{} }
-            TestScript = { $false }
-            DependsOn  = @("[xWaitForADDomain]DscForestWait")
-        }
+        # Script Config
+        # {
+        #     SetScript  = {
+        #         Invoke-WebRequest "$using:ConfigScript" -UseBasicParsing -Outfile "C:\Temp\ad.ps1"
+        #         C:\Temp\ad.ps1 -DomainCreds $DomainCreds -DomainRoot $DomainRoot -DefaultUsername $Admincreds.UserName
+        #     }
+        #     GetScript  = { @{} }
+        #     TestScript = { $false }
+        #     DependsOn  = @("[xWaitForADDomain]DscForestWait")
+        # }
         
         Script GPOs
         {
