@@ -8,25 +8,25 @@ locals {
       size       = "Standard_B2s"
       image_plan = "2022-datacenter-g2"
     },
-    {
-      name       = "APEXSRV"
-      ip         = "10.0.0.5"
-      domain     = "apex.local"
-      size       = "Standard_B2s"
-      image_plan = "2022-datacenter-g2"
-    },
-    {
-      name       = "EUDC1"
-      ip         = "10.0.0.6"
-      size       = "Standard_B2s"
-      image_plan = "2022-datacenter-g2"
-    },
-    {
-      name       = "EUSRV"
-      ip         = "10.0.0.7"
-      size       = "Standard_B2s"
-      image_plan = "2022-datacenter-g2"
-    },
+    # {
+    #   name       = "APEXSRV"
+    #   ip         = "10.0.0.5"
+    #   domain     = "apex.local"
+    #   size       = "Standard_B2s"
+    #   image_plan = "2022-datacenter-g2"
+    # },
+    # {
+    #   name       = "EUDC1"
+    #   ip         = "10.0.0.6"
+    #   size       = "Standard_B2s"
+    #   image_plan = "2022-datacenter-g2"
+    # },
+    # {
+    #   name       = "EUSRV"
+    #   ip         = "10.0.0.7"
+    #   size       = "Standard_B2s"
+    #   image_plan = "2022-datacenter-g2"
+    # },
     {
       name       = "SUMMITDC"
       ip         = "10.0.0.8"

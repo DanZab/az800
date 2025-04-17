@@ -32,9 +32,9 @@
         @{name = "LEvans-DA";first = "Lucas";Last = "Evans";displayname = "(DA) Luke Evans"},
         @{name = "CBeaumont-ADM";first = "Charlotte";Last = "Beaumont";displayname = "(Admin) Charlie Beaumont"},
         @{name = "NGreene-ADM";first = "Noah";Last = "Greene";displayname = "(Admin) Noah Greene"},
-        @{name = "NGreene-DA";first = "Noah";Last = "Greene";displayname = "(DA) Noah Greene"}
-        @{name = "NGreene-EA";first = "Noah";Last = "Greene";displayname = "(EA) Noah Greene"}
-        @{name = "LEvans-EA";first = "Lucas";Last = "Evans";displayname = "(EA) Luke Evans"},
+        @{name = "NGreene-DA";first = "Noah";Last = "Greene";displayname = "(DA) Noah Greene"},
+        @{name = "NGreene-EA";first = "Noah";Last = "Greene";displayname = "(EA) Noah Greene"},
+        @{name = "LEvans-EA";first = "Lucas";Last = "Evans";displayname = "(EA) Luke Evans"}
     )
     $Groups = @(
         @{name = "SEC-ServerAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Admin permissions on Servers";members = ($AdminUsers | Where-Object {$_.name -like "*-ADM"}).name},
