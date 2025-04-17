@@ -59,13 +59,13 @@ After connecting to your lab server (DC1):
 > A domain name, just like an internet domain name, is the DNS name used to identify your local Active Directory domain.
 </details>
 
-<details><summary>2. Why would you use Read Only Domain Controller (RODC)?</summary>
+<details><summary>3. Why would you use Read Only Domain Controller (RODC)?</summary>
 <br>
 
 > RODCs should only be used in cases where a Domain Controller cannot be physically secured. It prevents someone from obtaining a complete copy of the Active Directory database through the physical hard drives.
 </details>
 
-<details><summary>3. You are adding a new DC to an existing domain. The new DC is on the same network as the existing DCs but you are encountering an error when attempting to promote it. What could be two potential causes?</summary>
+<details><summary>4. You are adding a new DC to an existing domain. The new DC is on the same network as the existing DCs but you are encountering an error when attempting to promote it. What could be two potential causes?</summary>
 <br>
 
 > - There may be a firewall blocking communication to the existing DC
@@ -73,19 +73,19 @@ After connecting to your lab server (DC1):
 
 </details>
 
-<details><summary>4. What funcion does DNS serve in an AD domain?</summary>
+<details><summary>5. What funcion does DNS serve in an AD domain?</summary>
 <br>
 
 > DNS resolution is required for ALL active directory operations. You cannot contact or interact with a domain controller without using DNS. Any login or authentication activity in active directory uses the AD domain name to look up a domain controller, without DNS working, the client would be unable to connect.
 </details>
 
-<details><summary>5. What is a Domain Admin account and what makes them unique?</summary>
+<details><summary>6. What is a Domain Admin account and what makes them unique?</summary>
 <br>
 
 > Domain admins are the most highly privileged accounts in an AD environment. A domain admin account can be used to gain access to any system connected to an AD domain. It is best practice to limit the use of these accounts to only domain administration tasks on the DCs themselves.
 </details>
 
-<details><summary>6. What is the difference between a NetBIOS username and a user principal name and how would you type each into a login prompt?</summary>
+<details><summary>7. What is the difference between a NetBIOS username and a user principal name and how would you type each into a login prompt?</summary>
 <br>
 
 > A NetBIOS username is the old format that looks like `DOMAIN\user`, a user principal name is a modern format that looks like `user@domain.name`.

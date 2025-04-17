@@ -14,4 +14,6 @@
 
 5. What is a Domain Admin account and what makes them unique?
 
+7. What is the difference between a NetBIOS username and a user principal name and how would you type each into a login prompt?
+
 [See Answers](solutions.md)
