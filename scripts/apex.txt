@@ -17,57 +17,93 @@
         @{name="RBAC";path="OU=Groups,$DomainRoot"}
     )
     $Users = @(
-        @{name = "LSullivan";first = "Liam";Last = "Sullivan";displayname = "Liam Sullivan"},
-        @{name = "EWilson";first = "Emma";Last = "Wilson";displayname = "Emma Wilson"},
-        @{name = "JCarter";first = "John";Last = "Carter";displayname = "John Carter"},
-        @{name = "MDavis";first = "Mary";Last = "Davis";displayname = "Mary Davis"},
-        @{name = "DMiller";first = "David";Last = "Miller";displayname = "David Miller"},
-        @{name = "EThorne";first = "Evelyn";Last = "Thorne";displayname = "Evelyn Thorne"},
-        @{name = "CBeaumont";first = "Charlotte";Last = "Beaumont";displayname = "Charlie Beaumont"},
-        @{name = "NGreene";first = "Noah";Last = "Greene";displayname = "Noah Greene"},
-        @{name = "OWalker";first = "Olivia";Last = "Walker";displayname = "Olivia Walker"},
-        @{name = "LEvans";first = "Lucas";Last = "Evans";displayname = "Lucas Evans"}
+        "Liam Sullivan",
+        "Emma Wilson",
+        "John Carter",
+        "Mary Davis",
+        "David Miller",
+        "Evelyn Thorne",
+        "Charlie Beaumont",
+        "Noah Greene",
+        "Olivia Walker",
+        "Lucas Evans"
+        "(Admin) Luke Evans",
+        "(DA) Luke Evans",
+        "(Admin) Charlie Beaumont",
+        "(Admin) Noah Greene",
+        "(DA) Noah Greene",
+        "(EA) Noah Greene",
+        "(EA) Luke Evans"
     )
-    $AdminUsers = @(
-        @{name = "LEvans-ADM";first = "Lucas";Last = "Evans";displayname = "(Admin) Luke Evans"},
-        @{name = "LEvans-DA";first = "Lucas";Last = "Evans";displayname = "(DA) Luke Evans"},
-        @{name = "CBeaumont-ADM";first = "Charlotte";Last = "Beaumont";displayname = "(Admin) Charlie Beaumont"},
-        @{name = "NGreene-ADM";first = "Noah";Last = "Greene";displayname = "(Admin) Noah Greene"},
-        @{name = "NGreene-DA";first = "Noah";Last = "Greene";displayname = "(DA) Noah Greene"},
-        @{name = "NGreene-EA";first = "Noah";Last = "Greene";displayname = "(EA) Noah Greene"},
-        @{name = "LEvans-EA";first = "Lucas";Last = "Evans";displayname = "(EA) Luke Evans"}
-    )
-    $Groups = @(
-        @{name = "SEC-ServerAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Admin permissions on Servers";members = ($AdminUsers | Where-Object {$_.name -like "*-ADM"}).name},
-        @{name = "SEC-RODCDelegatedAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Delegated Admin Permissions on RODCs";members = @()},
-        @{name = "FS-DFS-IT-RW";OU = "OU=File Share,OU=Groups,$DomainRoot";description = "Read/Write on \\$DomainName\IT$";members = @()},
-        @{name = "APP-BackupUtil-User";OU = "OU=Application,OU=Groups,$DomainRoot";description = "Login to BackupUtil";members = @()},
-        @{name = "APP-BackupUtil-Admin";OU = "OU=Application,OU=Groups,$DomainRoot";description = "Admin rights in BackupUtil";members = @()}
-    )
-    [array]$DomainAdmins = ($AdminUsers | Where-Object {$_.name -like "*-DA"}).name
-    [array]$EnterpriseAdmins = ($AdminUsers | Where-Object {$_.name -like "*-EA"}).name
 
     ForEach ($OU in $OUs)
     {
         New-ADOrganizationalUnit -Name $OU.name -Path $OU.path -ProtectedFromAccidentalDeletion $true -Credential $DomainCreds
     }
-        
+
+    $EnterpriseAdmins = @()
+    $DomainAdmins = @()
+    $AdminAccounts = @()
+
     ForEach ($User in $Users)
     {
-        New-ADUser -Name $User.name -AccountPassword $DomainCreds.Password -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=People,$DomainRoot" -Credential $DomainCreds
+        $Split = $User.Split(" ")
+        If ($Split.Count -gt 2) {
+            $First = $Split[1]
+            $Last = $Split[2]
+            $Path = "OU=Admins,OU=People,$DomainRoot"
+        }
+        Else {
+            $First = $Split[0]
+            $Last = $Split[1]
+            $Path = "OU=People,$DomainRoot"
+        }
+            
+        $Name = "$($First.substring(0,1))$($Last)"
+        If ($Split[0] -eq "(Admin)"){
+            $Name = "$Name-ADM"
+            $AdminAccounts += $Name
+        }
+        If ($Split[0] -eq "(DA)"){
+            $Name = "$Name-DA"
+            $DomainAdmins += $Name
+        }
+        If ($Split[0] -eq "(EA)"){
+            $Name = "$Name-EA"
+            $EnterpriseAdmins += $Name
+        }
+
+        $args = @{
+             Name = $Name
+             UserPrincipalName = "$Name@$DomainName"
+             SamAccountName = $Name
+             AccountPassword = $DomainCreds.Password
+             DisplayName = $User
+             GivenName = $First
+             Surname = $Last
+             Path = $Path
+             Enabled = $true
+             Credential = $DomainCreds
+        }
+        New-ADUser @args
     }
 
-    ForEach ($User in $AdminUsers)
-    {
-        New-ADUser -Name $User.name -AccountPassword $DomainCreds.Password -DisplayName $User.displayname -GivenName $User.first -Surname $User.last -Path "OU=Admins,OU=People,$DomainRoot" -Enabled $true -Credential $DomainCreds
-    }
     Move-ADObject -Identity "CN=$DefaultUsername,CN=Users,$DomainRoot" -TargetPath "OU=Admins,OU=People,$DomainRoot"
+    
+    $Groups = @(
+        @{name = "SEC-ServerAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Admin permissions on Servers";members = $AdminAccounts},
+        @{name = "SEC-RODCDelegatedAdmins";OU = "OU=Security,OU=Groups,$DomainRoot";description = "Users with Delegated Admin Permissions on RODCs";members = @()},
+        @{name = "FS-DFS-IT-RW";OU = "OU=File Share,OU=Groups,$DomainRoot";description = "Read/Write on \\$DomainName\IT$";members = @()},
+        @{name = "APP-BackupUtil-User";OU = "OU=Application,OU=Groups,$DomainRoot";description = "Login to BackupUtil";members = @()},
+        @{name = "APP-BackupUtil-Admin";OU = "OU=Application,OU=Groups,$DomainRoot";description = "Admin rights in BackupUtil";members = @()}
+    )
 
     ForEach ($Group in $Groups)
     {
         New-ADGroup -Name $Group.name -Path $Group.OU -Description $Group.description -GroupCategory Security -GroupScope Global
-        Add-ADGroupMember $Group.Name -Members $Group.Members
+        If (($Group.Members).count -gt 0) {Add-ADGroupMember $Group.Name -Members $Group.Members}
     }
-
+    
+    #>
     Add-ADGroupMember "Domain Admins" -Members $DomainAdmins
     Add-ADGroupMember "Enterprise Admins" -Members $EnterpriseAdmins

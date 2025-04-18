@@ -109,48 +109,15 @@ configuration addomain
             DependsOn            = "[xADDomain]FirstDS"
         }
 
-        # Script Config
-        # {
-        #     SetScript  = {
-        #         Invoke-WebRequest "$using:ConfigScript" -UseBasicParsing -Outfile "C:\Temp\ad.ps1"
-        #         C:\Temp\ad.ps1 -DomainCreds $DomainCreds -DomainRoot $DomainRoot -DefaultUsername $Admincreds.UserName -DomainName $using:DomainName
-        #     }
-        #     GetScript  = { @{} }
-        #     TestScript = { $false }
-        #     DependsOn  = @("[xWaitForADDomain]DscForestWait")
-        # }
-        
-        Script GPOs
+        Script Config
         {
             SetScript  = {
-                $Path = "C:\Temp\GPO"
-                New-Item -Path $Path -ItemType Directory -Force
-                Invoke-WebRequest "$using:GPOzip" -UseBasicParsing -Outfile "C:\Temp\gpo.zip"
-                Expand-Archive -LiteralPath "C:\Temp\gpo.zip" -DestinationPath $Path -Force
-
-                $GPOs = @(
-                    @{
-                        Name = "Server-Admins"
-                        OU = "OU=Servers,$DomainDN"
-                    },
-                    @{
-                        Name = "Domain-RDP"
-                        OU = "$DomainDN"
-                    },
-                    @{
-                        Name = "Domain-Firewall"
-                        OU = "$DomainDN"
-                    }
-                )
-                ForEach ($GPO in $GPOs) {
-                    New-GPO -Name $GPO.Name
-                    Import-GPO -Path $Path -BackupGpoName $GPO.Name -TargetName $GPO.Name
-                    New-GPLink -Name $GPO.Name -Target $GPO.OU
-                }
+                Invoke-WebRequest "$using:ConfigScript" -UseBasicParsing -Outfile "C:\Temp\ad.ps1"
+                C:\Temp\ad.ps1 -DomainCreds $DomainCreds -DomainRoot $DomainRoot -DefaultUsername $Admincreds.UserName -DomainName $using:DomainName
             }
             GetScript  = { @{} }
             TestScript = { $false }
             DependsOn  = @("[xWaitForADDomain]DscForestWait")
         }
-    }
+    }       
 }

@@ -159,37 +159,37 @@ SETTINGS
 PROT_SETTINGS
 }
 
-resource "azurerm_virtual_machine_extension" "setup_summit" {
-  name                       = "setup_ad"
-  virtual_machine_id         = module.remaining_servers["SUMMITDC"].vm_id
-  publisher                  = "Microsoft.Powershell"
-  type                       = "DSC"
-  type_handler_version       = "2.19"
-  auto_upgrade_minor_version = true
+# resource "azurerm_virtual_machine_extension" "setup_summit" {
+#   name                       = "setup_ad"
+#   virtual_machine_id         = module.remaining_servers["SUMMITDC"].vm_id
+#   publisher                  = "Microsoft.Powershell"
+#   type                       = "DSC"
+#   type_handler_version       = "2.19"
+#   auto_upgrade_minor_version = true
 
-  settings = <<SETTINGS
-{
-  "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/addomain.zip",
-  "ConfigurationFunction": "addomain.ps1\\addomain",
-  "Properties": {
-    "DomainName": "summit.corp",
-    "AdminCreds": {
-      "UserName": "${var.username}",
-      "Password": "PrivateSettingsRef:AdminPassword"
-    },
-    "ConfigScript": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/summit.txt"
-  }
-}
-SETTINGS
+#   settings = <<SETTINGS
+# {
+#   "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/addomain.zip",
+#   "ConfigurationFunction": "addomain.ps1\\addomain",
+#   "Properties": {
+#     "DomainName": "summit.corp",
+#     "AdminCreds": {
+#       "UserName": "${var.username}",
+#       "Password": "PrivateSettingsRef:AdminPassword"
+#     },
+#     "ConfigScript": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/summit.txt"
+#   }
+# }
+# SETTINGS
 
-  protected_settings = <<PROT_SETTINGS
-{
-  "Items": {
-    "AdminPassword": "${var.password}"
-  }
-}
-PROT_SETTINGS
-}
+#   protected_settings = <<PROT_SETTINGS
+# {
+#   "Items": {
+#     "AdminPassword": "${var.password}"
+#   }
+# }
+# PROT_SETTINGS
+# }
 
 resource "azurerm_virtual_machine_extension" "domain_join" {
   for_each = { for server in local.servers : server.name => server if try(server.domain != null, false) }
