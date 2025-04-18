@@ -7,7 +7,8 @@ locals {
       ip         = "10.0.0.4"
       size       = "Standard_B2s"
       image_plan = "2022-datacenter-g2"
-    },
+    }
+    # },
     # {
     #   name       = "APEXSRV"
     #   ip         = "10.0.0.5"
@@ -27,12 +28,12 @@ locals {
     #   size       = "Standard_B2s"
     #   image_plan = "2022-datacenter-g2"
     # },
-    {
-      name       = "SUMMITDC"
-      ip         = "10.0.0.8"
-      size       = "Standard_B2s"
-      image_plan = "2022-datacenter-g2"
-    }
+    # {
+    #   name       = "SUMMITDC"
+    #   ip         = "10.0.0.8"
+    #   size       = "Standard_B2s"
+    #   image_plan = "2022-datacenter-g2"
+    # }
   ]
 }
 
