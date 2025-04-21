@@ -17,6 +17,12 @@
         @{name="RBAC";path="OU=Groups,$DomainRoot"}
     )
 
+    ForEach ($OU in $OUs)
+    {
+        New-ADOrganizationalUnit @OU -ProtectedFromAccidentalDeletion $true -Credential $DomainCreds
+    }
+    Move-ADObject -Identity "CN=$DefaultUsername,CN=Users,$DomainRoot" -TargetPath "OU=Admins,OU=People,$DomainRoot"
+    
     $Users = @("John Smith",
         "Mary Johnson",
         "Robert Williams",
@@ -40,7 +46,6 @@
         "(Domain Admin) Jason Thomas",
         "(Domain Admin) Michelle Jackson"
     )
-
 
     $DomainAdmins = @()
     $AdminAccounts = @()
@@ -88,13 +93,6 @@
         @{name = "APP-BackupUtil-User";Path = "OU=Application,OU=Groups,$DomainRoot";description = "Login to BackupUtil";members = @()},
         @{name = "APP-BackupUtil-Admin";Path = "OU=Application,OU=Groups,$DomainRoot";description = "Admin rights in BackupUtil";members = @()}
     )
-
-
-    ForEach ($OU in $OUs)
-    {
-        New-ADOrganizationalUnit @OU -ProtectedFromAccidentalDeletion $true -Credential $DomainCreds
-    }
-    Move-ADObject -Identity "CN=$DefaultUsername,CN=Users,$DomainRoot" -TargetPath "OU=Admins,OU=People,$DomainRoot"
 
     ForEach ($Group in $Groups)
     {
