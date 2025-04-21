@@ -21,15 +21,22 @@ Use this button to deploy with the GUI:
 > - These credentials will not work after you promote the domain controllers, you will need to use domain admin credentials to connect after promotion.
 
 > - There are three servers in this lab:
->     - APEXDC1: A domain controller running the apex.local domain
->     - EUDC1: A default windows server
->     - SUMMITDC: A domain controller running the summit.corp domain
+>     - APEXDC1 10.0.0.4: A domain controller running the apex.local domain
+>     - APEXSRV 10.0.0.5: A member server in the apex.local domain
+>     - EUDC1 10.0.0.6: A default windows server
+>     - EUSRV 10.0.0.7: A member server that can be joined to the EU domain
+>     - SUMMITDC 10.0.0.8: A domain controller running the summit.corp domain
 
+**Lab Diagram:**
+
+![](../../img/AZ800-forest.png)
 
 # Lab Scenarios
 
 > [!IMPORTANT]
-> You should set aside enough time to do all of these labs in order. Because this lesson involves installing the Domain Controllers, you cannot start with the demo AD lab environment like the other lessons.
+> Be mindful of cost for this lab. It is running five servers so it is more expensive than most other labs.
+>
+> If you want to reduce the cost, you can edit the `servers.tf` file and delete/comment out the APEXSRV (lines 11-17) and EUSRV (lines 24-29) blocks before deploying the lab. This will reduce the number of servers to three.
 
 1. [Configure a Forest and a transitive, one-way trust](#1---install-two-domain-controllers)
 
