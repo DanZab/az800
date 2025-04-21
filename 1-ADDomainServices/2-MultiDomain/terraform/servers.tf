@@ -9,21 +9,8 @@ locals {
       image_plan = "2022-datacenter-g2"
     },
     {
-      name       = "APEXSRV"
-      ip         = "10.0.0.5"
-      domain     = "apex.local"
-      size       = "Standard_B2s"
-      image_plan = "2022-datacenter-g2"
-    },
-    {
       name       = "EUDC1"
       ip         = "10.0.0.6"
-      size       = "Standard_B2s"
-      image_plan = "2022-datacenter-g2"
-    },
-    {
-      name       = "EUSRV"
-      ip         = "10.0.0.7"
       size       = "Standard_B2s"
       image_plan = "2022-datacenter-g2"
     },
@@ -116,7 +103,8 @@ module "remaining_servers" {
     name = "boot${lower(replace(each.key, "-", ""))}"
   }
   new_network_interface = {
-    name = "${each.key}-nic"
+    name        = "${each.key}-nic"
+    dns_servers = try(each.value.dns_servers, null)
     ip_configurations = [
       {
         private_ip_address_allocation = "Static"
@@ -190,30 +178,30 @@ SETTINGS
 PROT_SETTINGS
 }
 
-resource "azurerm_virtual_machine_extension" "domain_join" {
-  for_each = { for server in local.servers : server.name => server if try(server.domain != null, false) }
+# resource "azurerm_virtual_machine_extension" "domain_join" {
+#   for_each = { for server in local.servers : server.name => server if try(server.domain != null, false) }
 
-  name                       = "join-domain"
-  virtual_machine_id         = module.remaining_servers[each.key].vm_id
-  publisher                  = "Microsoft.Compute"
-  type                       = "JsonADDomainExtension"
-  type_handler_version       = "1.3"
-  auto_upgrade_minor_version = true
+#   name                       = "join-domain"
+#   virtual_machine_id         = module.remaining_servers[each.key].vm_id
+#   publisher                  = "Microsoft.Compute"
+#   type                       = "JsonADDomainExtension"
+#   type_handler_version       = "1.3"
+#   auto_upgrade_minor_version = true
 
-  settings = <<SETTINGS
-        {
-            "Name": "${each.value.domain}",
-            "User": "${var.username}@${each.value.domain}",
-            "Restart": "true",
-            "Options": "3"
-        }
-SETTINGS
+#   settings = <<SETTINGS
+#         {
+#             "Name": "${each.value.domain}",
+#             "User": "${var.username}@${each.value.domain}",
+#             "Restart": "true",
+#             "Options": "3"
+#         }
+# SETTINGS
 
-  protected_settings = <<PROTECTED_SETTINGS
-        {
-            "Password": "${var.password}"
-        }
-PROTECTED_SETTINGS
+#   protected_settings = <<PROTECTED_SETTINGS
+#         {
+#             "Password": "${var.password}"
+#         }
+# PROTECTED_SETTINGS
 
-  depends_on = [azurerm_virtual_machine_extension.setup_domain]
-}
+#   depends_on = [azurerm_virtual_machine_extension.setup_domain]
+# }
