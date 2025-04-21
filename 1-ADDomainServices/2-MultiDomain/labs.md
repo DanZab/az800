@@ -7,7 +7,7 @@ Use the terraform directory to deploy with terraform.
 
 Use this button to deploy with the GUI:
 
-(Unavailable)
+[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FDanZab%2Faz800%2Frefs%2Fheads%2Fmain%2Ftemplates%2F1.2.AD.json)
 
 > [!CAUTION]
 > Do not forget to run `terraform destroy` or to delete the resource group with your lab resources when you are finished!
