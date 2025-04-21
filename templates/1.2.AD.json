@@ -357,7 +357,11 @@
                         "DomainName": "apex.local"
                     }
                 },
-                "protectedSettings": {}
+                "protectedSettings": {
+                    "Items": {
+                        "AdminPassword": "[parameters('password')]"
+                    }
+                }
             }
         },
         {
@@ -385,7 +389,11 @@
                         "DomainName": "summit.corp"
                     }
                 },
-                "protectedSettings": {}
+                "protectedSettings": {
+                    "Items": {
+                        "AdminPassword": "[parameters('password')]"
+                    }
+                }
             }
         },
         {
