@@ -22,9 +22,7 @@ Use this button to deploy with the GUI:
 
 > - There are three servers in this lab:
 >     - APEXDC1 10.0.0.4: A domain controller running the apex.local domain
->     - APEXSRV 10.0.0.5: A member server in the apex.local domain
 >     - EUDC1 10.0.0.6: A default windows server
->     - EUSRV 10.0.0.7: A member server that can be joined to the EU domain
 >     - SUMMITDC 10.0.0.8: A domain controller running the summit.corp domain
 
 **Lab Diagram:**
@@ -33,22 +31,16 @@ Use this button to deploy with the GUI:
 
 # Lab Scenarios
 
-> [!IMPORTANT]
-> Be mindful of cost for this lab. It is running five servers so it is more expensive than most other labs.
->
-> If you want to reduce the cost, you can edit the `servers.tf` file and delete/comment out the APEXSRV (lines 11-17) and EUSRV (lines 24-29) blocks before deploying the lab. This will reduce the number of servers to three.
-
-1. [Configure a Forest and a transitive, one-way trust](#1---install-two-domain-controllers)
-
----
-
-
 ## Configure a Forest and a transitive, one-way trust
-Scenario: 
+Scenario: You are an administrator at Apex International. Your legal department wants to segregate the European division into it's own authentication and administrative boundary. You still need to maintain the ability for central IT administrators to manage servers if needed. You must configure an eu child domain and validate that there is a group in the child domain that contains the server administrators from the parent. (Your administrator accounts have a '-ADM' suffix and are located in the People/Admins OU.)
+
+Apex International has also acquired the Summit Corporation. Your IT team needs to be able to manage the `summit.corp` domain to facilitate the technical transition using their `apex.local` accounts. The IT team from Summit does not require any access to the Apex domain.
 
 ### Completion Criteria
 To complete this lab you should have the following criteria configured:
 - The `apex.local` forest should have two domains; `apex.local`, and `eu.apex.local`
 - You should be able to log into the `summit.corp` domain with users from both `apex.local` and `eu.apex.local`
+- You should not be able to log into either `apex.local` domains using a `summit.corp` user
 
 ### Lesson Objectives Covered:
+- Configure and manage forest and domain trusts
