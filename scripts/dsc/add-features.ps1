@@ -14,7 +14,7 @@ configuration add-features
 
         ForEach ($Feature in $Features)
         {
-            WindowsFeature Features { 
+            WindowsFeature $Feature { 
                 Ensure = "Present" 
                 Name   = $Feature
                 IncludeAllSubFeature = $true
