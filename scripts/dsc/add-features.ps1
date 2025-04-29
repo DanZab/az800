@@ -3,17 +3,16 @@ configuration add-features
     param 
     ( 
         [Parameter(Mandatory)]
-        [String]$Features
+        [array]$Features
     ) 
 
-    $FeatureArray = $Features -Split ","
     Node localhost
     {
         LocalConfigurationManager {
             RebootNodeIfNeeded = $true
         }
 
-        ForEach ($Feature in $FeatureArray)
+        ForEach ($Feature in $Features)
         {
             WindowsFeature Features { 
                 Ensure = "Present" 

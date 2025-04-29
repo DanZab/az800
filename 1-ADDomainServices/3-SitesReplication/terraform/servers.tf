@@ -12,21 +12,27 @@ locals {
       name        = "APEXDC2"
       domain      = "apex.local"
       dns_servers = ["10.0.0.4"]
-      features    = "AD-Domain-Services,DNS"
-      subnet_id   = azurerm_subnet.snet_lab2.id
-      ip          = "10.0.1.6"
-      size        = "Standard_B2s"
-      image_plan  = "2022-datacenter-g2"
+      features = [
+        "AD-Domain-Services",
+        "DNS"
+      ]
+      subnet_id  = azurerm_subnet.snet_lab2.id
+      ip         = "10.0.1.6"
+      size       = "Standard_B2s"
+      image_plan = "2022-datacenter-g2"
     },
     {
       name        = "APEXDC3"
       domain      = "apex.local"
       dns_servers = ["10.0.0.4"]
-      features    = "AD-Domain-Services,DNS"
-      subnet_id   = azurerm_subnet.snet_lab3.id
-      ip          = "10.0.3.6"
-      size        = "Standard_B2s"
-      image_plan  = "2022-datacenter-g2"
+      features = [
+        "AD-Domain-Services",
+        "DNS"
+      ]
+      subnet_id  = azurerm_subnet.snet_lab3.id
+      ip         = "10.0.3.6"
+      size       = "Standard_B2s"
+      image_plan = "2022-datacenter-g2"
     }
 
   ]
@@ -189,17 +195,17 @@ resource "azurerm_virtual_machine_extension" "add_features" {
 
   name                       = "add-features"
   virtual_machine_id         = module.remaining_servers[each.key].vm_id
-  publisher                  = "Microsoft.Compute"
+  publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
   type_handler_version       = "2.19"
   auto_upgrade_minor_version = true
 
   settings = <<SETTINGS
 {
-  "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/add-features.zip"
+  "ModulesUrl": "https://raw.githubusercontent.com/DanZab/az800/main/scripts/dsc/add-features.zip",
   "ConfigurationFunction": "add-features.ps1\\add-features",
   "Properties": {
-    "Features": "${each.value.features}",
+    "Features": ${jsonencode(each.value.features)}
   }
 }
 SETTINGS
