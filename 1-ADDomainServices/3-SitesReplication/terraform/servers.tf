@@ -4,27 +4,27 @@ locals {
   servers = [
     {
       name       = "APEXDC1"
-      ip         = "10.0.0.4"
+      ip         = "10.0.1.4"
       size       = "Standard_B2s"
       image_plan = "2022-datacenter-g2"
     },
     {
       name        = "APEXDC2"
       domain      = "apex.local"
-      dns_servers = ["10.0.0.4"]
+      dns_servers = ["10.0.1.4"]
       features = [
         "AD-Domain-Services",
         "DNS"
       ]
       subnet_id  = azurerm_subnet.snet_lab2.id
-      ip         = "10.0.1.6"
+      ip         = "10.0.2.6"
       size       = "Standard_B2s"
       image_plan = "2022-datacenter-g2"
     },
     {
       name        = "APEXDC3"
       domain      = "apex.local"
-      dns_servers = ["10.0.0.4"]
+      dns_servers = ["10.0.1.4"]
       features = [
         "AD-Domain-Services",
         "DNS"
@@ -36,6 +36,8 @@ locals {
     }
 
   ]
+
+  server_ips = [for svr in local.servers : svr.ip]
 }
 
 module "first_server" {
